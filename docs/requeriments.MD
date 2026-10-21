@@ -210,3 +210,9 @@
 | RNF13 | MEDIA |
 | RF19 | BAIXA |
 | RF20 | BAIXA |
+
+
+## Telas
+- Login administrativo
+- Cadastro de barbeiro
+(https://www.figma.com/design/j7PCqxtERDlJBVuQoWjCal/Sem-t%C3%ADtulo?node-id=0-1&t=PlsiKGuN0Sdiv5SI-1)
