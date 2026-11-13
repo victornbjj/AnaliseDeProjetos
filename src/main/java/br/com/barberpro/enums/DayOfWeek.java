@@ -1,4 +1,4 @@
-package br.com.barberpro.domain;
+package br.com.barberpro.enums;
 
 public enum DayOfWeek {
   MONDAY("Segunda-feira"),

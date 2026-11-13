@@ -1,13 +1,13 @@
 package br.com.barberpro.service;
 
-import br.com.barberpro.domain.Barber;
-import br.com.barberpro.domain.DayOfWeek;
-import br.com.barberpro.domain.ServiceOffering;
-import br.com.barberpro.domain.WeeklySchedule;
-import br.com.barberpro.repository.BarberRepository;
-import br.com.barberpro.repository.ServiceOfferingRepository;
-import br.com.barberpro.web.form.BarberForm;
-import br.com.barberpro.web.form.DailyScheduleForm;
+import br.com.barberpro.enums.DayOfWeek;
+import br.com.barberpro.database.repository.BarberRepository;
+import br.com.barberpro.database.repository.ServiceOfferingRepository;
+import br.com.barberpro.database.model.Barber;
+import br.com.barberpro.database.model.ServiceOffering;
+import br.com.barberpro.database.model.WeeklySchedule;
+import br.com.barberpro.controller.form.BarberForm;
+import br.com.barberpro.controller.form.DailyScheduleForm;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -115,7 +115,12 @@ public class BarberService {
     for (DailyScheduleForm day : form.getSchedules()) {
       LocalTime start = day.isWorking() ? day.getStartTime() : null;
       LocalTime end = day.isWorking() ? day.getEndTime() : null;
-      barber.addSchedule(new WeeklySchedule(day.getDayOfWeek(), day.isWorking(), start, end));
+      barber.addSchedule(
+          new WeeklySchedule(
+              java.time.DayOfWeek.valueOf(day.getDayOfWeek().name()),
+              day.isWorking(),
+              start,
+              end));
     }
     return barberRepository.save(barber);
   }

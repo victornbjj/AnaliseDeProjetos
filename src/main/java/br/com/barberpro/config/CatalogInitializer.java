@@ -1,7 +1,7 @@
-package br.com.barberpro.service;
+package br.com.barberpro.config;
 
-import br.com.barberpro.domain.ServiceOffering;
-import br.com.barberpro.repository.ServiceOfferingRepository;
+import br.com.barberpro.database.model.ServiceOffering;
+import br.com.barberpro.database.repository.ServiceOfferingRepository;
 import java.math.BigDecimal;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;

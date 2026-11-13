@@ -1,6 +1,8 @@
-package br.com.barberpro.domain;
+package br.com.barberpro.database.model;
 
 import jakarta.persistence.*;
+
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 @Entity

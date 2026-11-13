@@ -8,10 +8,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import br.com.barberpro.domain.Barber;
-import br.com.barberpro.domain.DayOfWeek;
-import br.com.barberpro.repository.BarberRepository;
-import br.com.barberpro.repository.ServiceOfferingRepository;
+import br.com.barberpro.database.model.Barber;
+import br.com.barberpro.database.repository.BarberRepository;
+import br.com.barberpro.database.repository.ServiceOfferingRepository;
+import br.com.barberpro.enums.DayOfWeek;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

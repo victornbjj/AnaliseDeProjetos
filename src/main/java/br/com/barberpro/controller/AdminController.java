@@ -1,9 +1,9 @@
-package br.com.barberpro.web;
+package br.com.barberpro.controller;
 
-import br.com.barberpro.domain.DayOfWeek;
+import br.com.barberpro.enums.DayOfWeek;
 import br.com.barberpro.service.BarberService;
-import br.com.barberpro.web.form.BarberForm;
-import br.com.barberpro.web.form.DailyScheduleForm;
+import br.com.barberpro.controller.form.BarberForm;
+import br.com.barberpro.controller.form.DailyScheduleForm;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.time.LocalTime;

@@ -1,6 +1,6 @@
-package br.com.barberpro.web.form;
+package br.com.barberpro.controller.form;
 
-import br.com.barberpro.domain.DayOfWeek;
+import br.com.barberpro.enums.DayOfWeek;
 import java.time.LocalTime;
 
 public class DailyScheduleForm {

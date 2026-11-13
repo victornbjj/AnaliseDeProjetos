@@ -1,4 +1,4 @@
-package br.com.barberpro.web.form;
+package br.com.barberpro.controller.form;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
