@@ -6,8 +6,9 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD:postgres}
   jpa:
     hibernate:
+      # DDL-AUTO PARA PERIDO DE TEST
       ddl-auto: update
-    # Roda schema-postgresql.sql depois que o Hibernate cria/atualiza as tabelas.
+    # Roda V1__create_schema.sql depois que o Hibernate cria/atualiza as tabelas.
     defer-datasource-initialization: true
   sql:
     init:
