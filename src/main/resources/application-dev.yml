@@ -7,3 +7,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    # Roda schema-postgresql.sql depois que o Hibernate cria/atualiza as tabelas.
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+      platform: postgresql
