@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: barber-pro
+  profiles:
+    default: test
+  jpa:
+    open-in-view: false
+  thymeleaf:
+    cache: false
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 2MB
+
+server:
+  port: ${PORT:8080}
+
+app:
+  upload-dir: ./data/barber-photos

@@ -8,10 +8,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import br.com.barberpro.domain.Barber;
-import br.com.barberpro.domain.DayOfWeek;
-import br.com.barberpro.repository.BarberRepository;
-import br.com.barberpro.repository.ServiceOfferingRepository;
+import br.com.barberpro.database.model.Barbeiro;
+import br.com.barberpro.database.model.HorarioTrabalho;
+import br.com.barberpro.database.repository.BarbeiroRepository;
+import br.com.barberpro.database.repository.ServicoRepository;
+import br.com.barberpro.enums.DayOfWeek;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,12 +25,12 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 class AdminControllerTest {
   @Autowired MockMvc mockMvc;
-  @Autowired BarberRepository barberRepository;
-  @Autowired ServiceOfferingRepository serviceRepository;
+  @Autowired BarbeiroRepository barbeiroRepository;
+  @Autowired ServicoRepository servicoRepository;
 
   @BeforeEach
   void clearBarbers() {
-    barberRepository.deleteAll();
+    barbeiroRepository.deleteAll();
   }
 
   @Test
@@ -47,7 +48,7 @@ class AdminControllerTest {
 
   @Test
   void savesBarberServicesAndWeeklySchedule() throws Exception {
-    Long serviceId = serviceRepository.findAllByActiveTrueOrderByIdAsc().get(0).getId();
+    Long serviceId = servicoRepository.findAllByAtivoTrueOrderByIdAsc().get(0).getId();
     var request =
         multipart("/admin/barbeiros")
             .param("name", "João da Silva")
@@ -70,11 +71,21 @@ class AdminControllerTest {
         .perform(request)
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl("/admin/barbeiros?criado=true"));
-    Barber saved = barberRepository.findAll().get(0);
-    org.junit.jupiter.api.Assertions.assertEquals("João da Silva", saved.getName());
-    org.junit.jupiter.api.Assertions.assertEquals(1, saved.getServices().size());
-    org.junit.jupiter.api.Assertions.assertEquals(7, saved.getSchedules().size());
-    org.junit.jupiter.api.Assertions.assertEquals(12, saved.getLunchStart().getHour());
+    Barbeiro saved = barbeiroRepository.findAll().get(0);
+    org.junit.jupiter.api.Assertions.assertEquals("João da Silva", saved.getNome());
+    org.junit.jupiter.api.Assertions.assertEquals(1, saved.getServicos().size());
+    // Domingo não é dia de trabalho, então só há HorarioTrabalho de segunda (1) a sábado (6).
+    org.junit.jupiter.api.Assertions.assertEquals(6, saved.getHorariosTrabalho().size());
+    org.junit.jupiter.api.Assertions.assertTrue(
+        saved.getHorariosTrabalho().stream()
+            .allMatch(h -> h.getDiaSemana() >= 1 && h.getDiaSemana() <= 6));
+    HorarioTrabalho sabado =
+        saved.getHorariosTrabalho().stream()
+            .filter(h -> h.getDiaSemana() == 6)
+            .findFirst()
+            .orElseThrow();
+    org.junit.jupiter.api.Assertions.assertEquals(14, sabado.getHoraFim().getHour());
+    org.junit.jupiter.api.Assertions.assertEquals(12, sabado.getInicioAlmoco().getHour());
     mockMvc
         .perform(get("/admin/barbeiros?criado=true"))
         .andExpect(status().isOk())
@@ -83,7 +94,7 @@ class AdminControllerTest {
 
   @Test
   void rejectsInvalidHoursWithoutPersisting() throws Exception {
-    Long serviceId = serviceRepository.findAllByActiveTrueOrderByIdAsc().get(0).getId();
+    Long serviceId = servicoRepository.findAllByAtivoTrueOrderByIdAsc().get(0).getId();
     var request =
         multipart("/admin/barbeiros")
             .param("name", "Barbeiro válido")
@@ -105,6 +116,6 @@ class AdminControllerTest {
         .andExpect(status().isOk())
         .andExpect(view().name("admin/barber-form"))
         .andExpect(content().string(containsString("intervalos de 15 minutos")));
-    org.junit.jupiter.api.Assertions.assertTrue(barberRepository.findAll().isEmpty());
+    org.junit.jupiter.api.Assertions.assertTrue(barbeiroRepository.findAll().isEmpty());
   }
 }

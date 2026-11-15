@@ -1,4 +1,4 @@
-package br.com.barberpro.web;
+package br.com.barberpro.config;
 
 import java.nio.file.Path;
 import org.springframework.beans.factory.annotation.Value;

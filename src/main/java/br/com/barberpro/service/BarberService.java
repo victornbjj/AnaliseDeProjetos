@@ -1,15 +1,14 @@
 package br.com.barberpro.service;
 
-import br.com.barberpro.domain.Barber;
-import br.com.barberpro.domain.DayOfWeek;
-import br.com.barberpro.domain.ServiceOffering;
-import br.com.barberpro.domain.WeeklySchedule;
-import br.com.barberpro.repository.BarberRepository;
-import br.com.barberpro.repository.ServiceOfferingRepository;
-import br.com.barberpro.web.form.BarberForm;
-import br.com.barberpro.web.form.DailyScheduleForm;
+import br.com.barberpro.enums.DayOfWeek;
+import br.com.barberpro.database.repository.BarbeiroRepository;
+import br.com.barberpro.database.repository.ServicoRepository;
+import br.com.barberpro.database.model.Barbeiro;
+import br.com.barberpro.database.model.HorarioTrabalho;
+import br.com.barberpro.database.model.Servico;
+import br.com.barberpro.controller.form.BarberForm;
+import br.com.barberpro.controller.form.DailyScheduleForm;
 import java.io.IOException;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -21,24 +20,24 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class BarberService {
-  private final BarberRepository barberRepository;
-  private final ServiceOfferingRepository serviceRepository;
+  private final BarbeiroRepository barbeiroRepository;
+  private final ServicoRepository servicoRepository;
   private final PhotoStorageService photoStorage;
 
-  public BarberService(BarberRepository b, ServiceOfferingRepository s, PhotoStorageService p) {
-    barberRepository = b;
-    serviceRepository = s;
+  public BarberService(BarbeiroRepository b, ServicoRepository s, PhotoStorageService p) {
+    barbeiroRepository = b;
+    servicoRepository = s;
     photoStorage = p;
   }
 
   @Transactional(readOnly = true)
-  public List<ServiceOffering> availableServices() {
-    return serviceRepository.findAllByActiveTrueOrderByIdAsc();
+  public List<Servico> availableServices() {
+    return servicoRepository.findAllByAtivoTrueOrderByIdAsc();
   }
 
   @Transactional(readOnly = true)
-  public List<Barber> findAll() {
-    return barberRepository.findAll();
+  public List<Barbeiro> findAll() {
+    return barbeiroRepository.findAll();
   }
 
   public List<String> validate(BarberForm form) {
@@ -47,8 +46,8 @@ public class BarberService {
     if (ids == null || ids.isEmpty())
       errors.add("Selecione ao menos um serviço que o profissional realiza.");
     else if (new HashSet<>(ids).size() != ids.size()
-        || serviceRepository.findAllById(ids).size() != ids.size()
-        || serviceRepository.findAllByActiveTrueOrderByIdAsc().stream()
+        || servicoRepository.findAllById(ids).size() != ids.size()
+        || servicoRepository.findAllByAtivoTrueOrderByIdAsc().stream()
                 .filter(s -> ids.contains(s.getId()))
                 .count()
             != ids.size())
@@ -106,17 +105,21 @@ public class BarberService {
   }
 
   @Transactional
-  public Barber create(BarberForm form, MultipartFile photo) throws IOException {
-    String path = photoStorage.store(photo);
-    Barber barber =
-        new Barber(form.getName().trim(), path, form.getLunchStart(), form.getLunchEnd());
-    for (ServiceOffering service : serviceRepository.findAllById(form.getServiceIds()))
-      barber.addService(service);
+  public Barbeiro create(BarberForm form, MultipartFile photo) throws IOException {
+    String foto = photoStorage.store(photo);
+    Barbeiro barbeiro = new Barbeiro(form.getName().trim(), foto);
+    for (Servico servico : servicoRepository.findAllById(form.getServiceIds()))
+      barbeiro.addServico(servico);
     for (DailyScheduleForm day : form.getSchedules()) {
-      LocalTime start = day.isWorking() ? day.getStartTime() : null;
-      LocalTime end = day.isWorking() ? day.getEndTime() : null;
-      barber.addSchedule(new WeeklySchedule(day.getDayOfWeek(), day.isWorking(), start, end));
+      if (!day.isWorking()) continue;
+      barbeiro.addHorarioTrabalho(
+          new HorarioTrabalho(
+              java.time.DayOfWeek.valueOf(day.getDayOfWeek().name()).getValue(),
+              day.getStartTime(),
+              day.getEndTime(),
+              form.getLunchStart(),
+              form.getLunchEnd()));
     }
-    return barberRepository.save(barber);
+    return barbeiroRepository.save(barbeiro);
   }
 }

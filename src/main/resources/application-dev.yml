@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/barberpro}
+    driver-class-name: org.postgresql.Driver
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      # DDL-AUTO PARA PERIDO DE TEST
+      ddl-auto: update
+    # Roda V1__create_schema.sql depois que o Hibernate cria/atualiza as tabelas.
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+      platform: postgresql
