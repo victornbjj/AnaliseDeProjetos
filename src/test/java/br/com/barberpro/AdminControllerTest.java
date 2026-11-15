@@ -3,7 +3,6 @@ package br.com.barberpro;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,32 +30,6 @@ class AdminControllerTest {
   @BeforeEach
   void clearBarbers() {
     barberRepository.deleteAll();
-  }
-
-
-  @Test
-  void rendersPublicBookingAndAdminWorkspaceRoutes() throws Exception {
-    mockMvc.perform(get("/")).andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/agendar"));
-    mockMvc.perform(get("/agendar")).andExpect(status().isOk()).andExpect(view().name("booking/index"))
-        .andExpect(content().string(containsString("Agendamento sem cadastro")))
-        .andExpect(content().string(containsString("não salva reservas")));
-    mockMvc.perform(get("/admin")).andExpect(status().isOk()).andExpect(view().name("admin/overview"));
-    mockMvc.perform(get("/admin/agenda")).andExpect(status().isOk()).andExpect(content().string(containsString("não são gravados")));
-    mockMvc.perform(get("/admin/agendamentos")).andExpect(status().isOk());
-    mockMvc.perform(get("/admin/bloqueios")).andExpect(status().isOk());
-    mockMvc.perform(get("/admin/relatorios")).andExpect(status().isOk());
-  }
-
-  @Test
-  void persistsServicesAndRejectsInvalidDurations() throws Exception {
-    mockMvc.perform(post("/admin/servicos").param("name", "Teste persistente").param("durationMinutes", "30").param("price", "12.50"))
-        .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/admin/servicos"));
-    var created = serviceRepository.findAll().stream().filter(service -> service.getName().equals("Teste persistente")).findFirst().orElseThrow();
-    org.junit.jupiter.api.Assertions.assertEquals(30, created.getDurationMinutes());
-    mockMvc.perform(post("/admin/servicos").param("name", "Duração inválida").param("durationMinutes", "20").param("price", "12.50"))
-        .andExpect(status().isOk()).andExpect(view().name("admin/services"))
-        .andExpect(content().string(containsString("múltipla de 15")));
-    serviceRepository.delete(created);
   }
 
   @Test

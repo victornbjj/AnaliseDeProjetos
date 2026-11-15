@@ -30,10 +30,23 @@ public class ServiceOffering {
     this.price = price;
   }
 
-  public Long getId() { return id; }
-  public String getName() { return name; }
-  public int getDurationMinutes() { return durationMinutes; }
-  public BigDecimal getPrice() { return price; }
-  public boolean isActive() { return active; }
-  public void setActive(boolean active) { this.active = active; }
+  public Long getId() {
+    return id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public int getDurationMinutes() {
+    return durationMinutes;
+  }
+
+  public BigDecimal getPrice() {
+    return price;
+  }
+
+  public boolean isActive() {
+    return active;
+  }
 }
