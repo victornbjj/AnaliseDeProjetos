@@ -28,8 +28,7 @@ public class AdminController {
   public AdminController(BarberService service) {
     barberService = service;
   }
-
-  @GetMapping({"", "/login"})
+  @GetMapping("/login")
   public String login() {
     return "admin/login";
   }
