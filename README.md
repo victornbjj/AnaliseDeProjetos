@@ -17,9 +17,6 @@ Acesse `http://localhost:8080/admin/login` para a tela de acesso administrativo 
 
 O login administrativo é apenas a tela visual nesta etapa. A autenticação ainda não foi implementada e o formulário fica desabilitado; não há credenciais padrão nem sucesso simulado. As rotas administrativas ainda não devem ser publicadas em ambiente acessível pela internet.
 
-## Persistência
-
-O H2 usa o arquivo `./data/barberpro` e mantém os registros entre reinicializações. Fotos opcionais (JPEG, PNG ou WEBP, até 2 MB) são guardadas em `./data/barber-photos`. Ambos ficam fora do versionamento. O console H2 está desativado. Os serviços de exemplo (corte, barba, corte + barba e acabamento) são cadastrados automaticamente na primeira inicialização e poderão ser substituídos por uma futura tela de gestão de serviços.
 
 ## Testes
 
@@ -27,7 +24,7 @@ O H2 usa o arquivo `./data/barberpro` e mantém os registros entre reinicializa�
 .\mvnw.cmd test
 ```
 
-Os testes usam um banco H2 em memória separado do arquivo local.
+Os testes usam um banco H2 em memória.
 
 ## Escopo desta etapa
 
